@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Past Meetings &middot; AI Meeting Summarizer{% endblock %}
+{% block content %}
+<section class="card">
+    <h1>Past Meetings</h1>
+    <div id="meetings-table-wrapper">
+        <table id="meetings-table" class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Source / Lang</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="meetings-body">
+                <tr><td colspan="5" class="muted">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

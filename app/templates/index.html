@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}New Meeting &middot; AI Meeting Summarizer{% endblock %}
+{% block content %}
+<section class="card">
+    <h1>Summarize a Meeting</h1>
+    <p class="muted">Upload an audio recording (auto-transcribed with Whisper) or paste a transcript. The system will summarize the discussion, extract decisions, and track action items with deadlines and owners. Supports English and Farsi.</p>
+
+    <label class="field" style="max-width:240px">
+        <span>Language</span>
+        <select id="language-select" name="language">
+            <option value="auto" selected>Auto-detect</option>
+            <option value="en">English</option>
+            <option value="fa">فارسی</option>
+        </select>
+    </label>
+
+    <div class="tabs" role="tablist">
+        <button id="tab-audio" class="tab active" role="tab" aria-selected="true" data-target="panel-audio">Upload Audio</button>
+        <button id="tab-text" class="tab" role="tab" aria-selected="false" data-target="panel-text">Paste Transcript</button>
+    </div>
+
+    <div id="panel-audio" class="tab-panel active">
+        <form id="audio-form" enctype="multipart/form-data">
+            <label class="field">
+                <span>Meeting title</span>
+                <input type="text" name="title" placeholder="Optional title">
+            </label>
+            <div id="dropzone" class="dropzone" tabindex="0">
+                <p>Drag &amp; drop an audio file here, or click to browse</p>
+                <input type="file" id="audio-input" name="audio" accept=".mp3,.wav,.m4a,.webm,.ogg" hidden>
+                <p class="muted small">Accepted: .mp3, .wav, .m4a, .webm, .ogg (max 500 MB)</p>
+            </div>
+            <button type="submit" class="btn primary" disabled>Process Audio</button>
+        </form>
+    </div>
+
+    <div id="panel-text" class="tab-panel">
+        <form id="text-form">
+            <label class="field">
+                <span>Meeting title</span>
+                <input type="text" name="title" placeholder="Optional title">
+            </label>
+            <label class="field">
+                <span>Transcript</span>
+                <textarea name="transcript" rows="14" placeholder="Paste the full meeting transcript here..."></textarea>
+            </label>
+            <button type="submit" class="btn primary">Process Transcript</button>
+        </form>
+    </div>
+
+    <div id="progress" class="progress hidden">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <p id="progress-status" class="muted small">Starting...</p>
+    </div>
+</section>
+{% endblock %}

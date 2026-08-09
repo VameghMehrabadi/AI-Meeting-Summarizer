@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Meeting Summarizer{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <a href="/" class="brand">AI Meeting Summarizer</a>
+            <nav>
+                <a href="/">New Meeting</a>
+                <a href="/meetings">Past Meetings</a>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="app-footer">
+        <div class="container">
+            <small>Local open-source models &middot; No data leaves your machine</small>
+        </div>
+    </footer>
+    <script src="/static/js/main.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
