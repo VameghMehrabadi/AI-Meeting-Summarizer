@@ -1,14 +1,17 @@
 """FastAPI application entry point."""
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 
 from app.core.config import UPLOAD_DIR
 from app.db.database import init_db
-from app.api import meetings, reports
+from app.api import meetings, reports, pipeline
+
+ROOT_INDEX = Path(__file__).resolve().parent.parent / "index.html"
 
 
 @asynccontextmanager
@@ -28,11 +31,12 @@ templates = Jinja2Templates(directory="app/templates")
 # Routers
 app.include_router(meetings.router)
 app.include_router(reports.router)
+app.include_router(pipeline.router)
 
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return FileResponse(ROOT_INDEX, media_type="text/html")
 
 
 @app.get("/meetings", response_class=HTMLResponse)

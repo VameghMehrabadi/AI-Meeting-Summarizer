@@ -143,7 +143,8 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 async function loadMeetings() {
     try {
         const res = await fetch("/api/meetings");
-        const meetings = await res.json();
+        const data = await res.json();
+        const meetings = data.meetings || data;
         const body = document.getElementById("meetings-body");
         if (!meetings.length) {
             body.innerHTML = `<tr><td colspan="5" class="muted">No meetings yet. <a href="/">Create one</a>.</td></tr>`;

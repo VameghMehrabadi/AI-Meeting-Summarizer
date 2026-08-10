@@ -672,6 +672,7 @@ async function testConnection(){
     out.textContent = '✓ اتصال برقرار شد';
     out.className = 'conn-result ok';
     setConnected(true);
+    loadMeetings();
   }catch(err){
     out.textContent = '✕ اتصال برقرار نشد — در حالت نمایشی ادامه می‌دهیم (' + err.message + ')';
     out.className = 'conn-result fail';
@@ -762,7 +763,6 @@ async function callExtractActions(transcript){
     try{
       const res = await apiCall('/api/extract-actions', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({transcript}) });
       const d = await res.json();
-      console.log('ACTION TRACKER RESULT:', actionData);
       return d.items;
     }catch(e){ /* fall through */ }
   }
@@ -910,6 +910,11 @@ async function downloadReport() {
     return;
   }
 
+  if (state.demoMode || typeof state.currentMeetingId !== 'number') {
+    alert('در حالت نمایشی، دانلود گزارش پشتیبانی نمی‌شود. ابتدا به API واقعی متصل شوید و جلسه را ذخیره کنید.');
+    return;
+  }
+
   try {
     const response = await fetch(
       `${state.apiBase}/api/meetings/${state.currentMeetingId}/report`
@@ -969,6 +974,8 @@ async function loadMeetings(){
 /* init */
 setConnected(false);
 renderHistory();
+/* auto-connect to the API on page load */
+testConnection();
 </script>
 </body>
 </html>

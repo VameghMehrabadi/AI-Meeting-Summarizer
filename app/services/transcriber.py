@@ -46,6 +46,28 @@ def transcribe(audio_path: str, language: str = None) -> str:
     return text
 
 
+def transcribe_with_segments(audio_path: str, language: str = None) -> list:
+    """Transcribe an audio file and return segment-level info with timestamps.
+
+    Returns:
+        A list of dicts: ``[{"text", "start", "end"}, ...]``
+    """
+    path = Path(audio_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Audio file not found: {audio_path}")
+
+    model = _get_model()
+    segments, _info = model.transcribe(str(path), beam_size=5, language=language)
+    result = []
+    for seg in segments:
+        result.append({
+            "text": seg.text.strip(),
+            "start": round(seg.start, 2),
+            "end": round(seg.end, 2),
+        })
+    return result
+
+
 def is_audio_filename(filename: str) -> bool:
     """Check whether a filename has an accepted audio extension."""
     from app.core.config import ALLOWED_AUDIO_EXTENSIONS
