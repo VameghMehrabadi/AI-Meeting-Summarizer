@@ -192,36 +192,114 @@ def delete_meeting(meeting_id: int, db: Session = Depends(get_db)):
 
 @router.get("/{meeting_id}/report")
 def meeting_report(meeting_id: int, db: Session = Depends(get_db)):
-    """Return a downloadable report for the meeting.
-
-    Generates a Markdown report served as a file download. The SPA frontend
-    downloads it as meeting-report.pdf; for a true PDF, install reportlab/weasyprint.
-    """
+    """Return a downloadable PDF report for the meeting."""
     m = crud.get_meeting(db, meeting_id)
     if not m:
         raise HTTPException(status_code=404, detail="Meeting not found")
 
-    lines = [
-        f"# {m.title or 'Untitled Meeting'}",
-        "",
-        f"*Source: {m.source_type} · Language: {m.language or '—'} · Created: {m.created_at.isoformat() if m.created_at else '—'}*",
-        "",
-        "## Summary",
-        m.summary or "",
-        "",
-        "## Action Items",
-    ]
-    for a in m.action_items:
-        lines.append(f"- {a.text} (owner: {a.owner or '—'}, due: {a.due_date or '—'})")
-    lines += ["", "## Participants", ", ".join(m.participants or [])]
-    lines += ["", "## Transcript", m.transcript or ""]
-    content = "\n".join(lines)
-
+    pdf_bytes = _build_pdf(m)
     return Response(
-        content=content,
-        media_type="text/markdown",
-        headers={"Content-Disposition": f'attachment; filename="meeting-{meeting_id}-report.md"'},
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="meeting-{meeting_id}-report.pdf"'},
     )
+
+
+def _build_pdf(m) -> bytes:
+    """Generate a PDF report from a meeting using reportlab."""
+    import io
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import cm
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.platypus import (
+        SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
+    )
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_LEFT
+
+    # Register Tahoma font (supports Persian + English)
+    font_name = "Helvetica"
+    try:
+        pdfmetrics.registerFont(TTFont("Tahoma", "C:/Windows/Fonts/tahoma.ttf"))
+        font_name = "Tahoma"
+    except Exception:
+        pass
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=2 * cm, bottomMargin=2 * cm,
+                            leftMargin=2 * cm, rightMargin=2 * cm)
+
+    styles = getSampleStyleSheet()
+    h1 = ParagraphStyle("H1", parent=styles["Heading1"], fontName=font_name,
+                        fontSize=18, spaceAfter=12, textColor=colors.HexColor("#1a2133"))
+    h2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName=font_name,
+                        fontSize=14, spaceAfter=8, spaceBefore=14, textColor=colors.HexColor("#2a3249"))
+    body = ParagraphStyle("Body", parent=styles["Normal"], fontName=font_name,
+                          fontSize=11, leading=18, spaceAfter=6)
+    meta = ParagraphStyle("Meta", parent=styles["Normal"], fontName=font_name,
+                           fontSize=9, textColor=colors.grey, spaceAfter=14)
+
+    story = []
+    title = m.title or "Untitled Meeting"
+    story.append(Paragraph(title, h1))
+    created = m.created_at.isoformat() if m.created_at else "—"
+    story.append(Paragraph(f"Source: {m.source_type} · Language: {m.language or '—'} · Created: {created}", meta))
+
+    # Summary
+    story.append(Paragraph("Summary", h2))
+    story.append(Paragraph(m.summary or "No summary available.", body))
+    story.append(Spacer(1, 10))
+
+    # Action Items
+    story.append(Paragraph("Action Items", h2))
+    if m.action_items:
+        data = [["Task", "Owner", "Due Date", "Status"]]
+        for a in m.action_items:
+            data.append([
+                Paragraph(a.text or "", body),
+                Paragraph(a.owner or "—", body),
+                Paragraph(a.due_date or "—", body),
+                Paragraph(a.status or "open", body),
+            ])
+        tbl = Table(data, colWidths=[7 * cm, 3 * cm, 3 * cm, 2.5 * cm])
+        tbl.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1a2133")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTNAME", (0, 0), (-1, -1), font_name),
+            ("FONTSIZE", (0, 0), (-1, 0), 10),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 8),
+            ("TOPPADDING", (0, 0), (-1, 0), 8),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cccccc")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ]))
+        story.append(tbl)
+    else:
+        story.append(Paragraph("No action items detected.", body))
+    story.append(Spacer(1, 10))
+
+    # Decisions
+    if m.decisions:
+        story.append(Paragraph("Key Decisions", h2))
+        for d in m.decisions:
+            story.append(Paragraph(f"• {d.text}", body))
+        story.append(Spacer(1, 10))
+
+    # Participants
+    story.append(Paragraph("Participants", h2))
+    story.append(Paragraph(", ".join(m.participants or []) or "None detected.", body))
+    story.append(Spacer(1, 10))
+
+    # Transcript
+    story.append(Paragraph("Transcript", h2))
+    transcript_text = m.transcript or ""
+    # Split long transcript into chunks to avoid layout issues
+    for chunk in [transcript_text[i:i+500] for i in range(0, len(transcript_text), 500)]:
+        story.append(Paragraph(chunk.replace("\n", "<br/>"), body))
+
+    doc.build(story)
+    return buf.getvalue()
 
 
 # ---------- Background pipeline ----------
