@@ -916,28 +916,15 @@ async function downloadReport() {
   }
 
   try {
-    const response = await fetch(
-      `${state.apiBase}/api/meetings/${state.currentMeetingId}/report`
-    );
-
-    if (!response.ok) {
-      throw new Error(`PDF download failed: ${response.status}`);
-    }
-
-    const blob = await response.blob();
     renderPipeline(-1, 4, false);
-    const url = window.URL.createObjectURL(blob);
-
+    const url = `${state.apiBase}/api/meetings/${state.currentMeetingId}/report`;
     const link = document.createElement('a');
     link.href = url;
     link.download = 'meeting-report.pdf';
-
+    link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     link.remove();
-
-    window.URL.revokeObjectURL(url);
-
   } catch (error) {
     console.error('PDF error:', error);
     alert('خطا در دریافت فایل PDF');
