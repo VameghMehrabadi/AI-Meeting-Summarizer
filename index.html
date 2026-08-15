@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دستیار هوشمند جلسات — Enoverse</title>
+<title>AI Meeting Assistant — Enoverse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    TOKENS
@@ -31,7 +31,7 @@
   --paper:#efe9db;
   --radius:14px;
   --radius-sm:9px;
-  --font-fa:'Vazirmatn',sans-serif;
+  --font-sans:'Inter',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;}
@@ -42,7 +42,7 @@ body{
     radial-gradient(900px 500px at 10% 8%, rgba(111,191,165,.06), transparent 55%),
     var(--bg);
   color:var(--text);
-  font-family:var(--font-fa);
+  font-family:var(--font-sans);
   line-height:1.7;
   min-height:100vh;
 }
@@ -79,7 +79,7 @@ header.top{
 }
 .brand-mark svg{width:20px;height:20px;}
 .brand-name{font-weight:800;font-size:16px;letter-spacing:-.2px;}
-.brand-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);letter-spacing:.12em;direction:ltr;text-align:right;}
+.brand-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);letter-spacing:.12em;}
 
 .nav-status{display:flex;align-items:center;gap:10px;}
 .pill{
@@ -99,10 +99,10 @@ header.top{
 .hero{padding:64px 0 40px;}
 .eyebrow{
   font-family:var(--font-mono);font-size:12px;color:var(--amber);
-  letter-spacing:.18em;text-transform:uppercase;direction:ltr;
-  display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-bottom:18px;
+  letter-spacing:.18em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;justify-content:flex-start;margin-bottom:18px;
 }
-.eyebrow::after{content:"";flex:1;max-width:120px;height:1px;background:linear-gradient(to left,var(--amber-dim),transparent);}
+.eyebrow::after{content:"";flex:1;max-width:120px;height:1px;background:linear-gradient(to right,var(--amber-dim),transparent);}
 h1.title{
   font-size:44px;font-weight:900;letter-spacing:-.5px;margin:0 0 14px;
   color:var(--text);
@@ -113,7 +113,6 @@ h1.title span{color:var(--amber);}
 /* Waveform signature */
 .waveform{
   display:flex;align-items:center;gap:3px;height:52px;margin-bottom:8px;
-  direction:ltr;
 }
 .waveform i{
   display:block;width:4px;border-radius:3px;
@@ -190,7 +189,7 @@ h1.title span{color:var(--amber);}
 textarea.transcript-input{
   width:100%;min-height:160px;resize:vertical;
   background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-sm);
-  color:var(--text);padding:14px;font-family:var(--font-fa);font-size:14px;line-height:1.8;
+  color:var(--text);padding:14px;font-family:var(--font-sans);font-size:14px;line-height:1.8;
 }
 textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 
@@ -243,7 +242,7 @@ textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 .stage.active .stage-icon svg,.stage.done .stage-icon svg{color:#101418;}
 .stage-num{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-bottom:6px;}
 .stage-title{font-size:13.5px;font-weight:800;margin-bottom:4px;}
-.stage-sub{font-size:11px;color:var(--text-faint);font-family:var(--font-mono);line-height:1.6;direction:ltr;text-align:right;min-height:28px;}
+.stage-sub{font-size:11px;color:var(--text-faint);font-family:var(--font-mono);line-height:1.6;min-height:28px;}
 .stage-badge{
   display:inline-block;margin-top:10px;font-size:10.5px;font-weight:700;
   padding:3px 9px;border-radius:100px;background:var(--panel-2);color:var(--text-faint);
@@ -257,15 +256,15 @@ textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 }
 .connector.flow{background:linear-gradient(90deg,var(--amber),var(--teal));}
 .connector.flow::after{
-  content:"";position:absolute;top:-2px;right:0;width:6px;height:6px;border-radius:50%;
+  content:"";position:absolute;top:-2px;left:0;width:6px;height:6px;border-radius:50%;
   background:var(--amber);box-shadow:0 0 8px var(--amber);
   animation:travel 1.1s linear infinite;
 }
 @keyframes travel{
-  0%{right:100%;opacity:0;}
+  0%{left:-2px;opacity:0;}
   10%{opacity:1;}
   90%{opacity:1;}
-  100%{right:-2px;opacity:0;}
+  100%{left:100%;opacity:0;}
 }
 
 /* ============================================================
@@ -273,11 +272,11 @@ textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 ============================================================ */
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto;}
 .tab{
-  background:none;border:none;color:var(--text-faint);padding:10px 4px;margin-left:22px;
+  background:none;border:none;color:var(--text-faint);padding:10px 4px;margin-right:22px;
   font-size:13.5px;font-weight:700;position:relative;white-space:nowrap;
 }
 .tab.active{color:var(--text);}
-.tab.active::after{content:"";position:absolute;bottom:-1px;right:0;left:0;height:2px;background:var(--amber);}
+.tab.active::after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--amber);}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;animation:fadein .25s ease;}
 @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
@@ -303,7 +302,7 @@ textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 .speaker-block{margin-bottom:16px;}
 .speaker-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;margin-bottom:6px;}
 .speaker-swatch{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.speaker-line{font-size:13.5px;color:var(--text-dim);padding-right:17px;line-height:1.9;}
+.speaker-line{font-size:13.5px;color:var(--text-dim);padding-left:17px;line-height:1.9;}
 
 .empty{
   text-align:center;padding:44px 20px;color:var(--text-faint);font-size:13.5px;
@@ -315,7 +314,7 @@ textarea.transcript-input:focus{outline:none;border-color:var(--amber);}
 ============================================================ */
 table.history{width:100%;border-collapse:collapse;font-size:13.5px;}
 table.history th{
-  text-align:right;font-size:11.5px;color:var(--text-faint);font-weight:600;
+  text-align:left;font-size:11.5px;color:var(--text-faint);font-weight:600;
   padding:0 12px 10px;border-bottom:1px solid var(--border);
 }
 table.history td{padding:13px 12px;border-bottom:1px solid var(--border-soft);}
@@ -365,12 +364,12 @@ footer{padding:40px 0 70px;}
         <svg viewBox="0 0 24 24" fill="none" stroke="#1a1204" stroke-width="2" stroke-linecap="round"><path d="M12 3v10M8 7l4-4 4 4M5 14a7 7 0 0014 0"/></svg>
       </div>
       <div>
-        <div class="brand-name">دستیار هوشمند جلسات</div>
+        <div class="brand-name">AI Meeting Assistant</div>
         <div class="brand-sub">MEETING&nbsp;INTELLIGENCE&nbsp;·&nbsp;ENOVERSE</div>
       </div>
     </div>
     <div class="nav-status">
-      <div class="pill"><span class="dot demo" id="connDot"></span><span id="connLabel">حالت نمایشی</span></div>
+      <div class="pill"><span class="dot demo" id="connDot"></span><span id="connLabel">Demo mode</span></div>
     </div>
   </div>
 </header>
@@ -379,62 +378,62 @@ footer{padding:40px 0 70px;}
 
   <section class="hero">
     <div class="eyebrow">PIPELINE v1 · FASTAPI READY</div>
-    <h1 class="title">از فایل صوتی جلسه<br>تا <span>خلاصه، اقدامات و گزارش</span></h1>
-    <p class="subtitle">فایل صوتی یا متن پیاده‌سازی‌شدهٔ جلسه را وارد کنید؛ خط پردازش، گفتار را به متن تبدیل می‌کند، گوینده‌ها را تشخیص می‌دهد، خلاصه و اقدامات را استخراج می‌کند و در نهایت گزارش نهایی را می‌سازد.</p>
+    <h1 class="title">From your meeting audio<br>to <span>summary, action items & report</span></h1>
+    <p class="subtitle">Upload an audio file or a meeting transcript; the pipeline converts speech to text, identifies speakers, extracts a summary and action items, and builds the final report.</p>
     <div class="waveform" id="heroWave"></div>
   </section>
 
   <!-- LAYER 1 — INPUT -->
   <section class="panel">
     <div class="panel-head">
-      <div class="panel-title"><span class="num">۱</span> ورودی</div>
-      <div class="panel-desc">فایل صوتی (mp3 / wav / m4a) یا متن آماده جلسه</div>
+      <div class="panel-title"><span class="num">1</span> Input</div>
+      <div class="panel-desc">Audio file (mp3 / wav / m4a) or a ready meeting transcript</div>
     </div>
 
     <div class="mode-switch">
-      <button class="active" data-mode="audio" onclick="setMode('audio')">فایل صوتی</button>
-      <button data-mode="text" onclick="setMode('text')">متن جلسه</button>
+      <button class="active" data-mode="audio" onclick="setMode('audio')">Audio file</button>
+      <button data-mode="text" onclick="setMode('text')">Meeting transcript</button>
     </div>
 
     <div id="audioMode">
       <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" accept=".mp3,.wav,.m4a,audio/*">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 15V4M8 8l4-4 4 4M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
-        <div class="dz-title">فایل صوتی را بکشید و رها کنید، یا کلیک کنید</div>
+        <div class="dz-title">Drag & drop an audio file, or click to browse</div>
         <div class="dz-sub">MP3 · WAV · M4A</div>
       </div>
       <div id="fileChip" style="display:none"></div>
     </div>
 
     <div id="textMode" style="display:none">
-      <textarea class="transcript-input" id="transcriptInput" placeholder="متن پیاده‌سازی‌شده جلسه را اینجا وارد یا جای‌گذاری کنید…"></textarea>
+      <textarea class="transcript-input" id="transcriptInput" placeholder="Type or paste the meeting transcript here…"></textarea>
     </div>
 
     <div class="field-row">
       <div class="field">
-        <label>عنوان جلسه</label>
-        <input type="text" id="meetingTitle" placeholder="مثلاً: بازنگری اسپرینت هفتگی">
+        <label>Meeting title</label>
+        <input type="text" id="meetingTitle" placeholder="e.g. Weekly sprint review">
       </div>
       <div class="field">
-        <label>شرکت‌کنندگان (اختیاری)</label>
-        <input type="text" id="meetingAttendees" placeholder="نام‌ها را با کاما جدا کنید">
+        <label>Attendees (optional)</label>
+        <input type="text" id="meetingAttendees" placeholder="Separate names with commas">
       </div>
     </div>
 
     <div class="run-row">
       <button class="btn btn-primary" id="runBtn" onclick="runPipeline()" disabled>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 4l14 8-14 8V4z"/></svg>
-        اجرای پردازش
+        Run pipeline
       </button>
-      <span class="run-hint" id="runHint">یک فایل صوتی انتخاب کنید یا متن جلسه را وارد کنید</span>
+      <span class="run-hint" id="runHint">Select an audio file or enter a meeting transcript</span>
     </div>
   </section>
 
   <!-- LAYER 2+3 — PIPELINE VISUAL -->
   <section class="panel">
     <div class="panel-head">
-      <div class="panel-title"><span class="num">۲–۳</span> خط پردازش</div>
-      <div class="panel-desc">پردازش گفتار و پردازش زبان طبیعی</div>
+      <div class="panel-title"><span class="num">2–3</span> Processing pipeline</div>
+      <div class="panel-desc">Speech processing and natural language processing</div>
     </div>
     <div class="pipeline" id="pipeline"><!-- stages injected by JS --></div>
   </section>
@@ -442,51 +441,51 @@ footer{padding:40px 0 70px;}
   <!-- RESULTS -->
   <section class="panel">
     <div class="panel-head">
-      <div class="panel-title"><span class="num">۴</span> نتایج</div>
-      <div class="panel-desc" id="resultMeta">هنوز پردازشی انجام نشده</div>
+      <div class="panel-title"><span class="num">4</span> Results</div>
+      <div class="panel-desc" id="resultMeta">No processing run yet</div>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="summary" onclick="setTab('summary')">خلاصه</button>
-      <button class="tab" data-tab="actions" onclick="setTab('actions')">اقدامات و مهلت‌ها</button>
-      <button class="tab" data-tab="transcript" onclick="setTab('transcript')">گفتگو</button>
+      <button class="tab active" data-tab="summary" onclick="setTab('summary')">Summary</button>
+      <button class="tab" data-tab="actions" onclick="setTab('actions')">Action items & deadlines</button>
+      <button class="tab" data-tab="transcript" onclick="setTab('transcript')">Transcript</button>
     </div>
 
     <div class="tab-panel active" data-panel="summary" id="panelSummary">
       <div class="empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
-        خلاصه جلسه پس از اجرای پردازش اینجا نمایش داده می‌شود
+        The meeting summary will appear here after processing
       </div>
     </div>
     <div class="tab-panel" data-panel="actions" id="panelActions">
       <div class="empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>
-        اقدامات، مسئولان و مهلت‌ها پس از استخراج اینجا نمایش داده می‌شود
+        Action items, owners, and deadlines will appear here after extraction
       </div>
     </div>
     <div class="tab-panel" data-panel="transcript" id="panelTranscript">
       <div class="empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 9h8M8 13h5M21 15a2 2 0 01-2 2H9l-4 4V6a2 2 0 012-2h12a2 2 0 012 2v9z"/></svg>
-        گفتگوی پیاده‌سازی‌شده به تفکیک گوینده اینجا نمایش داده می‌شود
+        The transcript, broken down by speaker, will appear here
       </div>
     </div>
 
     <div class="run-row" id="exportRow" style="display:none">
-      <button class="btn btn-ghost btn-sm" onclick="downloadReport()">دانلود گزارش PDF</button>
-      <button class="btn btn-ghost btn-sm" onclick="saveMeeting()">ذخیره در آرشیو جلسات</button>
+      <button class="btn btn-ghost btn-sm" onclick="downloadReport()">Download PDF report</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveMeeting()">Save to meeting archive</button>
     </div>
   </section>
 
   <!-- LAYER 4/5 — HISTORY -->
   <section class="panel">
     <div class="panel-head">
-      <div class="panel-title"><span class="num">۵</span> آرشیو جلسات</div>
+      <div class="panel-title"><span class="num">5</span> Meeting archive</div>
       <div class="panel-desc">PostgreSQL · MinIO</div>
     </div>
     <div id="historyWrap">
       <table class="history">
         <thead>
-          <tr><th>عنوان</th><th>تاریخ</th><th>مدت</th><th>وضعیت</th><th></th></tr>
+          <tr><th>Title</th><th>Date</th><th>Duration</th><th>Status</th><th></th></tr>
         </thead>
         <tbody id="historyBody"></tbody>
       </table>
@@ -497,21 +496,21 @@ footer{padding:40px 0 70px;}
   <footer>
     <div class="panel">
       <div class="panel-head">
-        <div class="panel-title">اتصال به FastAPI</div>
-        <div class="panel-desc">آدرس بک‌اند مدل را وارد کنید</div>
+        <div class="panel-title">Connect to FastAPI</div>
+        <div class="panel-desc">Enter your model backend's address</div>
       </div>
       <div class="api-panel">
         <div class="field">
-          <label>آدرس پایه API</label>
+          <label>API base URL</label>
           <input type="text" id="apiBase" class="mono" placeholder="http://localhost:8000" value="http://localhost:8000">
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="testConnection()">تست اتصال</button>
-        <button class="btn btn-ghost btn-sm" onclick="toggleDemo()" id="demoBtn">خاموش کردن حالت نمایشی</button>
+        <button class="btn btn-ghost btn-sm" onclick="testConnection()">Test connection</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleDemo()" id="demoBtn">Turn off demo mode</button>
       </div>
       <div class="conn-result" id="connResult"></div>
 
       <details class="contract-toggle">
-        <summary>قرارداد endpoint ها برای توسعه‌دهنده بک‌اند</summary>
+        <summary>Endpoint contract for backend developers</summary>
         <div class="contract">POST   /api/transcribe        (multipart file)  -&gt; { transcript, speakers:[{id,name}], segments:[{speaker,text,start,end}] }
 POST   /api/summarize         { transcript }    -&gt; { summary }
 POST   /api/extract-actions   { transcript }    -&gt; { items:[{task,owner,deadline}] }
@@ -560,11 +559,11 @@ const state = {
    PIPELINE DEFINITION (mirrors the architecture diagram)
 ============================================================ */
 const STAGES = [
-  { id:'input',     title:'ورودی',              sub:'audio / transcript', icon:'M12 3v10M8 7l4-4 4 4M5 14a7 7 0 0014 0' },
-  { id:'speech',     title:'پردازش گفتار',        sub:'Whisper · pyannote', icon:'M12 1a3 3 0 00-3 3v7a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v1a7 7 0 01-14 0v-1M12 18v4M8 22h8' },
-  { id:'nlp',        title:'پردازش زبان',         sub:'FLAN-T5 / LLM', icon:'M4 5h16M4 12h10M4 19h13' },
-  { id:'data',       title:'ذخیره‌سازی',          sub:'PostgreSQL · MinIO', icon:'M3 5v14c0 1.1 4 2 9 2s9-.9 9-2V5M3 5c0 1.1 4 2 9 2s9-.9 9-2M3 5c0-1.1 4-2 9-2s9 .9 9 2' },
-  { id:'delivery',   title:'ارائه',              sub:'Dashboard · PDF', icon:'M4 4h16v12H4zM8 20h8M12 16v4' },
+  { id:'input',     title:'Input',              sub:'audio / transcript', icon:'M12 3v10M8 7l4-4 4 4M5 14a7 7 0 0014 0' },
+  { id:'speech',     title:'Speech processing',        sub:'Whisper · pyannote', icon:'M12 1a3 3 0 00-3 3v7a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v1a7 7 0 01-14 0v-1M12 18v4M8 22h8' },
+  { id:'nlp',        title:'Language processing',         sub:'BART / LLM', icon:'M4 5h16M4 12h10M4 19h13' },
+  { id:'data',       title:'Storage',          sub:'PostgreSQL · MinIO', icon:'M3 5v14c0 1.1 4 2 9 2s9-.9 9-2V5M3 5c0 1.1 4 2 9 2s9-.9 9-2M3 5c0-1.1 4-2 9-2s9 .9 9 2' },
+  { id:'delivery',   title:'Delivery',              sub:'Dashboard · PDF', icon:'M4 4h16v12H4zM8 20h8M12 16v4' },
 ];
 
 function renderPipeline(activeIndex=-1, doneUpTo=-1, skipSpeech=false){
@@ -588,7 +587,7 @@ function renderPipeline(activeIndex=-1, doneUpTo=-1, skipSpeech=false){
       <div class="stage-num">${String(i+1).padStart(2,'0')}</div>
       <div class="stage-title">${s.title}</div>
       <div class="stage-sub">${s.sub}</div>
-      <div class="stage-badge">${isSkipped ? 'رد شد' : (i===activeIndex ? 'در حال پردازش' : (i<=doneUpTo ? 'کامل' : 'در انتظار'))}</div>
+      <div class="stage-badge">${isSkipped ? 'Skipped' : (i===activeIndex ? 'Processing' : (i<=doneUpTo ? 'Done' : 'Pending'))}</div>
     `;
     wrap.appendChild(el);
   });
@@ -648,8 +647,8 @@ function updateRunState(){
   const ready = state.mode==='audio' ? !!state.file : state.transcriptText.trim().length > 20;
   document.getElementById('runBtn').disabled = !ready;
   document.getElementById('runHint').textContent = ready
-    ? 'آماده اجرا'
-    : (state.mode==='audio' ? 'یک فایل صوتی انتخاب کنید' : 'حداقل چند جمله از متن جلسه را وارد کنید');
+    ? 'Ready to run'
+    : (state.mode==='audio' ? 'Select an audio file' : 'Enter at least a few sentences of the transcript');
 }
 
 /* ============================================================
@@ -665,16 +664,16 @@ async function apiCall(path, options={}){
 async function testConnection(){
   state.apiBase = document.getElementById('apiBase').value.trim() || state.apiBase;
   const out = document.getElementById('connResult');
-  out.textContent = 'در حال بررسی…';
+  out.textContent = 'Checking…';
   out.className = 'conn-result';
   try{
     await apiCall('/api/health');
-    out.textContent = '✓ اتصال برقرار شد';
+    out.textContent = '✓ Connected';
     out.className = 'conn-result ok';
     setConnected(true);
     loadMeetings();
   }catch(err){
-    out.textContent = '✕ اتصال برقرار نشد — در حالت نمایشی ادامه می‌دهیم (' + err.message + ')';
+    out.textContent = '✕ Connection failed — continuing in demo mode (' + err.message + ')';
     out.className = 'conn-result fail';
     setConnected(false);
   }
@@ -682,8 +681,8 @@ async function testConnection(){
 function setConnected(live){
   state.demoMode = !live;
   document.getElementById('connDot').className = 'dot ' + (live ? 'live' : 'demo');
-  document.getElementById('connLabel').textContent = live ? 'متصل به API' : 'حالت نمایشی';
-  document.getElementById('demoBtn').textContent = live ? 'روشن کردن حالت نمایشی' : 'خاموش کردن حالت نمایشی';
+  document.getElementById('connLabel').textContent = live ? 'Connected to API' : 'Demo mode';
+  document.getElementById('demoBtn').textContent = live ? 'Turn on demo mode' : 'Turn off demo mode';
 }
 function toggleDemo(){ setConnected(state.demoMode); }
 
@@ -745,7 +744,7 @@ async function callTranscribe(file){
     }catch(e){ /* fall through to demo */ }
   }
   await wait(900);
-  return mockTranscribe(file?.name || 'جلسه');
+  return mockTranscribe(file?.name || 'meeting');
 }
 async function callSummarize(transcript){
   if(!state.demoMode){
@@ -775,27 +774,27 @@ async function callExtractActions(transcript){
 ============================================================ */
 function mockTranscribe(name){
   return {
-    transcript: state.transcriptText || 'متن نمونهٔ پیاده‌سازی‌شده جلسه در اینجا قرار می‌گیرد.',
+    transcript: state.transcriptText || 'A sample meeting transcript would appear here.',
     speakers: [
-      {id:'s1', name:'گوینده ۱', color:'#e4a33f'},
-      {id:'s2', name:'گوینده ۲', color:'#6fbfa5'},
+      {id:'s1', name:'Speaker 1', color:'#e4a33f'},
+      {id:'s2', name:'Speaker 2', color:'#6fbfa5'},
     ],
     segments: [
-      {speaker:'گوینده ۱', text:'خب بریم سراغ بررسی وضعیت اسپرینت. مدل تشخیص گفتار رو تست کردیم؟'},
-      {speaker:'گوینده ۲', text:'بله، دقت روی نمونه‌های فارسی حدود ۹۲ درصده. مشکل اصلی روی صداهای هم‌پوشان بود.'},
-      {speaker:'گوینده ۱', text:'خوبه. تا جمعه خلاصه‌سازی رو هم وصل کن به pipeline.'},
-      {speaker:'گوینده ۲', text:'باشه، گزارش PDF رو هم تا آخر هفته آماده می‌کنم.'},
+      {speaker:'Speaker 1', text:'Alright, let\u2019s go over the sprint status. Did we test the speech recognition model?'},
+      {speaker:'Speaker 2', text:'Yes, accuracy on our sample data is around 92%. The main issue was overlapping speech.'},
+      {speaker:'Speaker 1', text:'Good. Let\u2019s get the summarization module wired into the pipeline by Friday.'},
+      {speaker:'Speaker 2', text:'Sure, I\u2019ll also have the PDF report ready by the end of the week.'},
     ]
   };
 }
 function mockSummary(){
-  return 'در این جلسه وضعیت پیاده‌سازی خط پردازش صوت بررسی شد. مدل تشخیص گفتار روی نمونه‌های فارسی با دقت قابل‌قبولی کار می‌کند، اما در تشخیص صداهای هم‌پوشان نیاز به بهبود دارد. تیم توافق کرد که ماژول خلاصه‌سازی تا پایان هفته به خط پردازش متصل شود و گزارش PDF نهایی نیز آماده شود.';
+  return 'This meeting reviewed the status of the audio processing pipeline. The speech recognition model performs with acceptable accuracy on sample data, but overlapping speech detection still needs improvement. The team agreed to connect the summarization module to the pipeline by the end of the week and to prepare the final PDF report.';
 }
 function mockActions(){
   return [
-    {task:'اتصال ماژول خلاصه‌سازی به pipeline اصلی', owner:'گوینده ۲', deadline:'جمعه این هفته'},
-    {task:'بهبود دقت تشخیص گفتار روی صداهای هم‌پوشان', owner:'گوینده ۱', deadline:'اسپرینت بعدی'},
-    {task:'آماده‌سازی خروجی گزارش PDF', owner:'گوینده ۲', deadline:'پایان هفته'},
+    {task:'Connect the summarization module to the main pipeline', owner:'Speaker 2', deadline:'This Friday'},
+    {task:'Improve speech recognition accuracy on overlapping speech', owner:'Speaker 1', deadline:'Next sprint'},
+    {task:'Prepare the PDF report output', owner:'Speaker 2', deadline:'End of week'},
   ];
 }
 
@@ -805,7 +804,7 @@ function mockActions(){
 function renderResults(){
   const r = state.results;
   document.getElementById('resultMeta').textContent =
-    (document.getElementById('meetingTitle').value || 'جلسه بدون عنوان') + ' · ' + new Date().toLocaleDateString('fa-IR');
+    (document.getElementById('meetingTitle').value || 'Untitled meeting') + ' · ' + new Date().toLocaleDateString('en-US');
 
   document.getElementById('panelSummary').innerHTML = `<div class="summary-text">${r.summary}</div>`;
 
@@ -815,8 +814,8 @@ function renderResults(){
       <div>
         <div class="task">${it.task}</div>
         <div class="tags">
-          <span class="tag owner">مسئول: ${it.owner}</span>
-          <span class="tag deadline">مهلت: ${it.deadline}</span>
+          <span class="tag owner">Owner: ${it.owner}</span>
+          <span class="tag deadline">Due: ${it.deadline}</span>
         </div>
       </div>
     </div>
@@ -847,7 +846,7 @@ function setTab(tab){
 ============================================================ */
 async function saveMeeting() {
   const title =
-    document.getElementById('meetingTitle').value || 'جلسه بدون عنوان';
+    document.getElementById('meetingTitle').value || 'Untitled meeting';
 
   const payload = {
     title,
@@ -883,7 +882,7 @@ async function saveMeeting() {
 
     } catch (e) {
       console.error('SAVE MEETING ERROR:', e);
-      alert('ذخیره جلسه ناموفق بود: ' + e.message);
+      alert('Failed to save meeting: ' + e.message);
       return;
     }
   }
@@ -895,23 +894,23 @@ async function saveMeeting() {
   state.meetings.unshift({
     id,
     title,
-    date: new Date().toLocaleDateString('fa-IR'),
+    date: new Date().toLocaleDateString('en-US'),
     duration: '—',
     status: 'done'
   });
 
   renderHistory();
-  alert('جلسه ذخیره شد.');
+  alert('Meeting saved.');
 }
 
 async function downloadReport() {
   if (!state.currentMeetingId) {
-    alert('ابتدا جلسه را ذخیره کنید.');
+    alert('Save the meeting first.');
     return;
   }
 
   if (state.demoMode || typeof state.currentMeetingId !== 'number') {
-    alert('در حالت نمایشی، دانلود گزارش پشتیبانی نمی‌شود. ابتدا به API واقعی متصل شوید و جلسه را ذخیره کنید.');
+    alert('Report download isn\u2019t supported in demo mode. Connect to a real API and save the meeting first.');
     return;
   }
 
@@ -927,13 +926,13 @@ async function downloadReport() {
     link.remove();
   } catch (error) {
     console.error('PDF error:', error);
-    alert('خطا در دریافت فایل PDF');
+    alert('Error retrieving the PDF file');
   }
 }
 function renderHistory(){
   const body = document.getElementById('historyBody');
   if(state.meetings.length===0){
-    body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-faint);padding:24px 0">هنوز جلسه‌ای در آرشیو ذخیره نشده</td></tr>`;
+    body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-faint);padding:24px 0">No meetings saved to the archive yet</td></tr>`;
     return;
   }
   body.innerHTML = state.meetings.map(m=>`
@@ -941,8 +940,8 @@ function renderHistory(){
       <td>${m.title}</td>
       <td class="mono">${m.date}</td>
       <td class="mono">${m.duration}</td>
-      <td><span class="status-chip done">تکمیل‌شده</span></td>
-      <td class="row-actions"><button onclick="alert('مشاهده جزئیات جلسه ${m.id}')">مشاهده</button></td>
+      <td><span class="status-chip done">Completed</span></td>
+      <td class="row-actions"><button onclick="alert('View details for meeting ${m.id}')">View</button></td>
     </tr>
   `).join('');
 }

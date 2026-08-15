@@ -55,6 +55,8 @@ def _summarize_text(text: str, lang: str, max_length: int, min_length: int) -> s
         min_length=min_length,
         num_beams=4,
         length_penalty=2.0,
+        no_repeat_ngram_size=3,
+        repetition_penalty=1.1,
         early_stopping=True,
     )
     return tokenizer.decode(summary_ids[0], skip_special_tokens=True).strip()
